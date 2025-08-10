@@ -19,11 +19,11 @@ export const routes = [
     element: <NotFound404 />
   },
   {
-    path: '/',
+    path: '',
     element: <ConstructorPage />
   },
   {
-    path: '/register',
+    path: 'register',
     element: (
       <ProtectedRoute onlyUnAuthorized>
         <Register />
@@ -31,7 +31,7 @@ export const routes = [
     )
   },
   {
-    path: '/login',
+    path: 'login',
     element: (
       <ProtectedRoute onlyUnAuthorized>
         <Login />
@@ -39,7 +39,7 @@ export const routes = [
     )
   },
   {
-    path: '/forgot-password',
+    path: 'forgot-password',
     element: (
       <ProtectedRoute onlyUnAuthorized>
         <ForgotPassword />
@@ -47,7 +47,7 @@ export const routes = [
     )
   },
   {
-    path: '/reset-password',
+    path: 'reset-password',
     element: (
       <ProtectedRoute onlyUnAuthorized>
         <ResetPassword />
@@ -55,7 +55,7 @@ export const routes = [
     )
   },
   {
-    path: '/profile',
+    path: 'profile',
     children: [
       {
         index: true,
@@ -86,11 +86,11 @@ export const routes = [
     ]
   },
   {
-    path: '/feed',
+    path: 'feed',
     element: <Feed />
   },
   {
-    path: '/feed/:number',
+    path: 'feed/:number',
     element: (
       <ModalWithNavigation title={'Заказ'}>
         <OrderInfo />
@@ -98,11 +98,17 @@ export const routes = [
     )
   },
   {
-    path: '/ingredients/:id',
+    path: 'ingredients/:id',
     element: (
-      <ModalWithNavigation title={'Игридиент'}>
+      <ModalWithNavigation title={'Ингредиент'}>
         <IngredientDetails />
       </ModalWithNavigation>
     )
   }
 ];
+
+export const modalBackgroundMap: Record<string, string> = {
+  '/ingredients/': '/',
+  '/feed/': '/feed',
+  '/profile/orders/': '/profile/orders'
+};

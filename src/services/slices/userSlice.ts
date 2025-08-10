@@ -34,8 +34,9 @@ const initialState: TUserState = {
   orderError: null
 };
 
-export const getOrdersApiAsync = createAsyncThunk('user/getOrders', async () =>
-  getOrdersApi()
+export const getOrdersApiAsync = createAsyncThunk(
+  'user/getOrders',
+  getOrdersApi
 );
 
 export const registerUserApiAsync = createAsyncThunk(
@@ -94,21 +95,17 @@ export const checkUserAuthAsync = createAsyncThunk(
 
 export const updateUserApiAsync = createAsyncThunk(
   'user/updateUser',
-  async (data: TRegisterData) => {
-    const res = await updateUserApi(data);
-    return res.user;
-  }
+  updateUserApi
 );
 
 export const forgotPasswordApiAsync = createAsyncThunk(
   'user/forgotPassword',
-  async (email: string) => await forgotPasswordApi({ email })
+  forgotPasswordApi
 );
 
 export const resetPasswordApiAsync = createAsyncThunk(
   'user/resetPassword',
-  async (data: { password: string; token: string }) =>
-    await resetPasswordApi(data)
+  resetPasswordApi
 );
 
 export const userSlice = createSlice({
@@ -222,7 +219,7 @@ export const userSlice = createSlice({
       })
       .addCase(updateUserApiAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
       });
 
     /**
