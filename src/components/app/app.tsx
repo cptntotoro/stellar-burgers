@@ -2,58 +2,46 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader } from '@components';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { getIngredientsAsync } from '../../services/slices/ingredientsSlice';
 import { checkUserAuthAsync } from '../../services/slices/userSlice';
 import { useDispatch } from '../../services/store';
 import {
   createBrowserRouter,
+  matchPath,
   RouterProvider,
   useLocation,
   useNavigate,
   useRoutes
 } from 'react-router-dom';
-import { modalBackgroundMap, routes } from './routes-config';
-
-const isModalPath = (pathname: string): boolean =>
-  Object.keys(modalBackgroundMap).some(
-    (prefix) =>
-      pathname.startsWith(prefix) && pathname !== modalBackgroundMap[prefix]
-  );
-
-const getDefaultBackground = (pathname: string): Partial<Location> => {
-  const prefix = Object.keys(modalBackgroundMap).find((p) =>
-    pathname.startsWith(p)
-  );
-  if (prefix) {
-    return { pathname: modalBackgroundMap[prefix] };
-  }
-  return { pathname: '/' };
-};
+import { mainRoutes, modalRoutes } from './routes-config';
 
 const AppLayout = () => {
   const location = useLocation();
+  const background = location.state?.background;
   const navigate = useNavigate();
-  const isDirectAccess =
-    !location.state?.background && isModalPath(location.pathname);
+  const isInitialRender = useRef(true);
 
   useEffect(() => {
-    if (isDirectAccess) {
-      const defaultBackground = getDefaultBackground(location.pathname);
-      navigate(location.pathname, {
-        state: { background: defaultBackground },
-        replace: true
-      });
-    }
-  }, [isDirectAccess, location.pathname, navigate]);
+    const modalPaths = modalRoutes.map((route) => route.path);
+    const isModalPath = modalPaths.some((path) =>
+      matchPath(path, location.pathname)
+    );
 
-  const background = (location.state && location.state.background) ?? null;
-  const backgroundElement = useRoutes(routes, background ?? location);
-  const modalElement = useRoutes(routes, location);
+    if (isModalPath && isInitialRender.current) {
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+
+    isInitialRender.current = false;
+  }, [location, navigate]);
+
+  const mainElement = useRoutes(mainRoutes, background ?? location);
+  const modalElement = useRoutes(modalRoutes, location);
+
   return (
     <div className={styles.app}>
       <AppHeader />
-      {backgroundElement}
+      {mainElement}
       {background && modalElement}
     </div>
   );
@@ -65,7 +53,7 @@ const App = () => {
     {
       path: '/*',
       element: <AppLayout />,
-      children: routes
+      children: mainRoutes
     }
   ]);
 

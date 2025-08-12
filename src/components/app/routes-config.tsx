@@ -13,7 +13,7 @@ import { IngredientDetails, OrderInfo } from '@components';
 import { ProtectedRoute } from '../protected-route';
 import { ModalWithNavigation } from '../modal/modal-with-navigation';
 
-export const routes = [
+export const mainRoutes = [
   {
     path: '*',
     element: <NotFound404 />
@@ -77,9 +77,7 @@ export const routes = [
         path: 'orders/:number',
         element: (
           <ProtectedRoute>
-            <ModalWithNavigation title={'Заказ'}>
-              <OrderInfo />
-            </ModalWithNavigation>
+            <OrderInfo />
           </ProtectedRoute>
         )
       }
@@ -91,24 +89,39 @@ export const routes = [
   },
   {
     path: 'feed/:number',
+    element: <OrderInfo />
+  },
+  {
+    path: 'ingredients/:id',
+    element: <IngredientDetails title={'Детали ингредиента'} />
+  }
+];
+
+export const modalRoutes = [
+  {
+    path: 'feed/:number',
     element: (
-      <ModalWithNavigation title={'Заказ'}>
-        <OrderInfo />
+      <ModalWithNavigation>
+        <OrderInfo isModal />
       </ModalWithNavigation>
     )
   },
   {
     path: 'ingredients/:id',
     element: (
-      <ModalWithNavigation title={'Ингредиент'}>
-        <IngredientDetails />
+      <ModalWithNavigation>
+        <IngredientDetails title={'Детали ингредиента'} isModal />
       </ModalWithNavigation>
+    )
+  },
+  {
+    path: 'profile/orders/:number',
+    element: (
+      <ProtectedRoute>
+        <ModalWithNavigation>
+          <OrderInfo isModal />
+        </ModalWithNavigation>
+      </ProtectedRoute>
     )
   }
 ];
-
-export const modalBackgroundMap: Record<string, string> = {
-  '/ingredients/': '/',
-  '/feed/': '/feed',
-  '/profile/orders/': '/profile/orders'
-};

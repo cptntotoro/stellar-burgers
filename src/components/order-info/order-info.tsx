@@ -1,12 +1,13 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, memo, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useDispatch, useSelector } from '../../services/store';
 import { useParams } from 'react-router-dom';
 import { getOrderByNumberApiAsync } from '../../services/slices/ordersSlice';
+import { OrderInfoProps } from './type';
 
-export const OrderInfo: FC = () => {
+export const OrderInfo: FC<OrderInfoProps> = memo(({ isModal }) => {
   const dispatch = useDispatch();
   const orderData = useSelector((state) => state.orders.orderModalData);
 
@@ -66,5 +67,5 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
-};
+  return <OrderInfoUI orderInfo={orderInfo} isModal={isModal} />;
+});
